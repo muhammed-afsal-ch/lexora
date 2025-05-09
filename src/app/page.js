@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, UserCircle, Mail, Phone, MapPin, Linkedin } from 'lucide-react';
 import { Menu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Head from 'next/head'; // Import Head from next/head
+
 
 
 
@@ -122,6 +124,24 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 p-4">
+      <Head>
+        <meta name="description" content="Lexora helps you set up and grow your business in Qatar. Get expert legal, translation, and setup services in one place." />
+        <meta name="keywords" content="business setup, legal services, certified translation, Qatar" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://www.lexoraservices.com" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Lexora - Grow Your Business in Qatar" />
+        <meta property="og:description" content="Expert setup, legal support, attestation, and certified translation — all in one place." />
+        <meta property="og:url" content="https://www.lexoraservices.com" />
+        <meta property="og:image" content="https://www.lexoraservices.com/images/preview.jpg" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Lexora - Grow Your Business in Qatar" />
+        <meta name="twitter:description" content="Expert setup, legal support, attestation, and certified translation — all in one place." />
+        <meta name="twitter:image" content="https://www.lexoraservices.com/images/preview.jpg" />
+      </Head>
+
       {/* Top Banner */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
@@ -586,6 +606,20 @@ export default function Dashboard() {
           </div>
         </div>
       </footer>
+
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Lexora",
+            "url": "https://www.lexoraservices.com",
+            "description": "Expert business setup, legal support, translation services in Qatar."
+          })
+        }}
+      />
 
 
     </div>
