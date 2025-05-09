@@ -496,7 +496,7 @@ export default function Dashboard() {
               <MapPin className="text-green-600 w-6 h-6 mt-1" />
               <div>
                 <h3 className="text-lg font-semibold text-gray-800">Our Office</h3>
-                <p className="text-gray-600">Doha, Qatar<br />Al Muntazah Street</p>
+                <p className="text-gray-600">Doha, Qatar<br />Mathar Qadeem</p>
               </div>
             </motion.div>
 
