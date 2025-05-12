@@ -524,7 +524,7 @@ export default function Dashboard() {
               <Mail className="text-green-600 w-6 h-6 mt-1" />
               <div>
                 <h3 className="text-lg font-semibold text-gray-800">Email</h3>
-                <p className="text-gray-600">support@lexorabusiness.qa</p>
+                <p className="text-gray-600">lexoraservices@gmail.com</p>
               </div>
             </motion.div>
           </div>
