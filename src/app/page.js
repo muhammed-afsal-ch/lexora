@@ -1,12 +1,50 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link'; // Added for navigation
 import { useState, useEffect, useRef } from 'react';
 import { Menu, Phone, Mail, MapPin, Clock, FileText, Stamp, MonitorSmartphone, Users2, BadgeCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
-import { BriefcaseBusiness, Settings2 } from "lucide-react"; // or any icon library
-import { useInView, useAnimation } from "framer-motion";
+import { BriefcaseBusiness, Settings2 } from 'lucide-react';
+import { useInView, useAnimation } from 'framer-motion';
 
+// New ServiceCard component to handle hooks
+function ServiceCard({ service, index }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true });
+  const controls = useAnimation();
+
+  useEffect(() => {
+    if (inView) {
+      controls.start('visible');
+    }
+  }, [inView, controls]); // Added 'controls' to dependency array
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      variants={{
+        hidden: { opacity: 0, y: 40 },
+        visible: { opacity: 1, y: 0 },
+      }}
+      className="bg-gradient-to-br from-green-50 to-white border border-green-200 rounded-2xl p-6 shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 group"
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <div className="bg-green-100 p-2 rounded-lg">{service.icon}</div>
+        <h3 className="text-xl font-semibold text-gray-800">{service.title}</h3>
+      </div>
+      <p className="text-gray-700 mb-4 leading-relaxed">{service.desc}</p>
+      <ul className="list-disc list-inside text-gray-700 space-y-1 pl-1">
+        {service.list.map((item, idx) => (
+          <li key={idx}>{item}</li>
+        ))}
+      </ul>
+    </motion.div>
+  );
+}
 
 export default function Dashboard() {
   const [showMenu, setShowMenu] = useState(false);
@@ -25,7 +63,7 @@ export default function Dashboard() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
   };
 
   const [scrolled, setScrolled] = useState(false);
@@ -39,15 +77,14 @@ export default function Dashboard() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Prepare WhatsApp message text with URL encoding
     const text = `
 *Free Consultation Request*
 Name: ${name}
@@ -57,57 +94,66 @@ Message: ${message}
     `;
 
     const encodedText = encodeURIComponent(text.trim());
-
-    // WhatsApp URL with phone number and text
     const whatsappURL = `https://wa.me/97431107654?text=${encodedText}`;
-
-    // Open WhatsApp chat in new tab
-    window.open(whatsappURL, "_blank");
+    window.open(whatsappURL, '_blank');
   };
-
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
       <Head>
-        <meta name="description" content="Lexora Business Solutions helps you set up and grow your business in Qatar with expert company formation, legal, and digital services." />
-        <meta name="keywords" content="business setup, company formation, Qatar, legal translation, PRO services, digital solutions" />
+        <meta
+          name="description"
+          content="Lexora Business Solutions helps you set up and grow your business in Qatar with expert company formation, legal, and digital services."
+        />
+        <meta
+          name="keywords"
+          content="business setup, company formation, Qatar, legal translation, PRO services, digital solutions"
+        />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://www.lexoraservices.com" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Lexora Business Solutions - Your Trusted Partner in Qatar" />
-        <meta property="og:description" content="Expert company formation, legal support, PRO services, and digital solutions — all in one place." />
+        <meta
+          property="og:description"
+          content="Expert company formation, legal support, PRO services, and digital solutions — all in one place."
+        />
         <meta property="og:url" content="https://www.lexoraservices.com" />
         <meta property="og:image" content="https://www.lexoraservices.com/images/preview.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Lexora Business Solutions - Your Trusted Partner in Qatar" />
-        <meta name="twitter:description" content="Expert company formation, legal support, PRO services, and digital solutions — all in one place." />
+        <meta
+          name="twitter:description"
+          content="Expert company formation, legal support, PRO services, and digital solutions — all in one place."
+        />
         <meta name="twitter:image" content="https://www.lexoraservices.com/images/preview.jpg" />
       </Head>
 
       <nav
-        className={`sticky top-0 z-50 flex items-center justify-between p-4 transition-all duration-300 ${scrolled
-          ? 'backdrop-blur bg-white/70 supports-[backdrop-filter]:bg-white/50 shadow-md'
-          : 'bg-transparent'
-          }`}
+        className={`sticky top-0 z-50 flex items-center justify-between p-4 transition-all duration-300 ${
+          scrolled ? 'backdrop-blur bg-white/70 supports-[backdrop-filter]:bg-white/50 shadow-md' : 'bg-transparent'
+        }`}
       >
         <div className="flex items-center space-x-2 -ml-4">
-          <Image
-            src="/images/logonew.png"
-            alt="Lexora Logo"
-            width={160}
-            height={80}
-            className="object-contain"
-          />
+          <Image src="/images/logonew.png" alt="Lexora Logo" width={160} height={80} className="object-contain" />
         </div>
 
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center space-x-6 text-green-800">
-          <a href="/" className="hover:text-green-600 transition">Home</a>
-          <a href="#services" className="hover:text-green-600 transition">Services</a>
-          <a href="#about" className="hover:text-green-600 transition">About Us</a>
-          <a href="#mission" className="hover:text-green-600 transition">Mission</a>
-
-          <a href="#contact" className="hover:text-green-600 transition">Contact</a>
+          <Link href="/" className="hover:text-green-600 transition">
+            Home
+          </Link>
+          <Link href="/#services" className="hover:text-green-600 transition">
+            Services
+          </Link>
+          <Link href="/#about" className="hover:text-green-600 transition">
+            About Us
+          </Link>
+          <Link href="/#mission" className="hover:text-green-600 transition">
+            Mission
+          </Link>
+          <Link href="/#contact" className="hover:text-green-600 transition">
+            Contact
+          </Link>
           <button
             className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
             onClick={() => (window.location.href = 'tel:+97431107654')}
@@ -115,7 +161,6 @@ Message: ${message}
             <Phone className="w-4 h-4" />
             <span>Connect Us</span>
           </button>
-
         </div>
 
         {/* Mobile Menu Icon */}
@@ -123,8 +168,6 @@ Message: ${message}
           <Menu className="w-6 h-6 text-green-800" />
         </button>
       </nav>
-
-
 
       {/* Menu Modal (Mobile Only) */}
       <AnimatePresence>
@@ -148,20 +191,20 @@ Message: ${message}
               <h2 className="text-2xl font-semibold text-gray-800">Menu</h2>
               <ul className="space-y-3 text-gray-700 text-lg">
                 {[
-                  { href: "#home", icon: "🏠", label: "Home" },
-                  { href: "#about", icon: "ℹ️", label: "About Us" },
-                  { href: "#services", icon: "💼", label: "Services" },
-                  { href: "#contact", icon: "📞", label: "Contact" },
+                  { href: '#home', icon: '🏠', label: 'Home' },
+                  { href: '#about', icon: 'ℹ️', label: 'About Us' },
+                  { href: '#services', icon: '💼', label: 'Services' },
+                  { href: '#contact', icon: '📞', label: 'Contact' },
                 ].map((item) => (
                   <li key={item.href}>
-                    <a
+                    <Link
                       href={item.href}
                       onClick={() => setShowMenu(false)}
                       className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition duration-300 ease-in-out hover:bg-gray-100 hover:shadow hover:scale-[1.02]"
                     >
                       <span>{item.icon}</span>
                       <span>{item.label}</span>
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -227,20 +270,17 @@ Message: ${message}
             Welcome to <span className="bg-gradient-to-r from-[#000] to-[#FFD700] text-transparent bg-clip-text">Lexora Business Solutions</span>
           </motion.h1>
 
-       <motion.p
-  className="text-sm sm:text-base md:text-xl max-w-[90%] sm:max-w-2xl mx-auto mb-6 sm:mb-8 text-gray-100 bg-[#1F2526]/30 backdrop-blur-sm p-3 sm:p-4 rounded-lg shadow-md leading-relaxed"
-  variants={itemVariants}
->
-  For years, we've been a reliable partner for entrepreneurs, companies, and investors navigating the Qatari market. Today, we introduce a new brand powered by the same experienced team, trusted processes, and client-focused mindset as your trusted partner in navigating the business landscape with ease and confidence.
-</motion.p>
-
-          <motion.div
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+          <motion.p
+            className="text-sm sm:text-base md:text-xl max-w-[90%] sm:max-w-2xl mx-auto mb-6 sm:mb-8 text-gray-100 bg-[#1F2526]/30 backdrop-blur-sm p-3 sm:p-4 rounded-lg shadow-md leading-relaxed"
             variants={itemVariants}
           >
+            For years, we have been a reliable partner for entrepreneurs, companies, and investors navigating the Qatari market. Today, we introduce a new brand powered by the same experienced team, trusted processes, and client-focused mindset as your trusted partner in navigating the business landscape with ease and confidence.
+          </motion.p>
+
+          <motion.div className="flex flex-col sm:flex-row gap-4 justify-center" variants={itemVariants}>
             <button
               className="bg-gradient-to-r from-[#16A34A] to-[#FFD700] hover:from-[#E59400] hover:to-[#E6BF00] text-[#1F2526] px-6 py-3 rounded-lg font-semibold transition shadow-lg"
-              onClick={() => window.location.href = '#contact'}
+              onClick={() => (window.location.href = '#contact')}
             >
               Request a Free Consultation
             </button>
@@ -248,14 +288,9 @@ Message: ${message}
         </motion.div>
       </motion.section>
 
-
       <section id="about" className="py-24 px-6 bg-gradient-to-br from-green-50 via-white to-green-100">
         <div className="max-w-7xl mx-auto text-center space-y-16">
-
-          {/* Container for whole section */}
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-
-            {/* Heading Section — full width within container */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -271,9 +306,7 @@ Message: ${message}
               </p>
             </motion.div>
 
-            {/* Two Feature Cards container */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
-              {/* Left Card */}
               <motion.div
                 className="bg-gradient-to-br from-green-50 via-white to-green-100 border border-green-300 rounded-3xl p-8 shadow-md hover:shadow-xl hover:-translate-y-2 transform transition-all duration-300 cursor-pointer max-w-full"
                 initial={{ opacity: 0, x: -50 }}
@@ -299,7 +332,6 @@ Message: ${message}
                 </ul>
               </motion.div>
 
-              {/* Right Card */}
               <motion.div
                 className="bg-gradient-to-br from-green-50 via-white to-green-100 border border-green-300 rounded-3xl p-8 shadow-md hover:shadow-xl hover:-translate-y-2 transform transition-all duration-300 cursor-pointer max-w-full"
                 initial={{ opacity: 0, x: 50 }}
@@ -326,217 +358,141 @@ Message: ${message}
             </div>
           </div>
 
-
-          {/* Mission & Vision Section */}
           <section className="py-20 bg-gradient-to-br from-white via-white to-green-50 rounded-3xl shadow-md mx-4 md:mx-8">
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-
-              {/* Left Content */}
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+                transition={{ delay: 0.2, duration: 0.8, ease: 'easeOut' }}
                 viewport={{ once: true }}
               >
                 <p className="text-sm text-green-500 font-semibold uppercase mb-2">Our Focus</p>
-                <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                  Our Mission & Vision
-                </h2>
-
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Our Mission & Vision</h2>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   <strong>Mission:</strong> To empower businesses by delivering reliable, efficient, and compliant corporate support services tailored to the needs of the Qatari market.
                 </p>
                 <p className="text-gray-700 leading-relaxed">
                   <strong>Vision:</strong> To be the most trusted and innovative business service provider in Qatar and the GCC, known for excellence and integrity.
                 </p>
-
                 <div className="mt-6 inline-flex items-center bg-white shadow-sm px-5 py-3 rounded-lg border border-gray-200">
-                  <div className="text-sm font-medium text-gray-800">
-                    ✅ Trusted by 100+ Companies
-                  </div>
+                  <div className="text-sm font-medium text-gray-800">✅ Trusted by 100+ Companies</div>
                 </div>
               </motion.div>
 
-              {/* Right Image */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5, duration: 0.9, ease: "easeOut" }}
+                transition={{ delay: 0.5, duration: 0.9, ease: 'easeOut' }}
                 viewport={{ once: true }}
               >
-                <img
+                <Image
                   src="/images/boost.png"
                   alt="Mission and Vision Illustration"
+                  width={500}
+                  height={500}
                   className="w-full max-w-lg mx-auto drop-shadow-xl rounded-2xl"
                 />
               </motion.div>
             </div>
           </section>
-
         </div>
       </section>
 
-
-      {/* Services Section */}
       <section id="services" className="py-24 px-6 bg-gradient-to-br from-white via-white to-green-100">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-16 text-center">Our Services</h2>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-            {/* Service Card */}
             {[
               {
-                title: "Company Formation & Business Setup",
+                title: 'Company Formation & Business Setup',
                 icon: <BriefcaseBusiness className="w-6 h-6 text-green-700" />,
-                desc: "We make it easy to start your business in Qatar by managing all the required steps, including company name reservation, Commercial Registration, trade license application, and more.",
+                desc: 'We make it easy to start your business in Qatar by managing all the required steps, including company name reservation, Commercial Registration, trade license application, and more.',
                 list: [
-                  "Company name reservation",
-                  "Commercial Registration (CR)",
-                  "Trade license application",
-                  "Municipality & Ministry approvals",
+                  'Company name reservation',
+                  'Commercial Registration (CR)',
+                  'Trade license application',
+                  'Municipality & Ministry approvals',
                 ],
               },
               {
-                title: "Legal Translation Services",
+                title: 'Legal Translation Services',
                 icon: <FileText className="w-6 h-6 text-green-700" />,
-                desc: "We offer certified Arabic-English translations accepted by all ministries and embassies in Qatar, covering contracts, government applications, and more.",
-                list: [
-                  "Contracts & MoUs",
-                  "Government applications",
-                  "Immigration and labor documents",
-                  "Certificates (birth, marriage, academic)",
-                ],
+                desc: 'We offer certified Arabic-English translations accepted by all ministries and embassies in Qatar, covering contracts, government applications, and more.',
+                list: ['Contracts & MoUs', 'Government applications', 'Immigration and labor documents', 'Certificates (birth, marriage, academic)'],
               },
               {
-                title: "Document Attestation",
+                title: 'Document Attestation',
                 icon: <Stamp className="w-6 h-6 text-green-700" />,
-                desc: "We facilitate attestation from ministries, embassies, and notaries, handling academic certificates, personal IDs, business contracts, and more.",
-                list: [
-                  "MOFA, MOJ, Ministry of Education",
-                  "Embassies & consulates",
-                  "Notaries and legal entities",
-                ],
+                desc: 'We facilitate attestation from ministries, embassies, and notaries, handling academic certificates, personal IDs, business contracts, and more.',
+                list: ['MOFA, MOJ, Ministry of Education', 'Embassies & consulates', 'Notaries and legal entities'],
               },
               {
-                title: "Digital Business Solutions",
+                title: 'Digital Business Solutions',
                 icon: <MonitorSmartphone className="w-6 h-6 text-green-700" />,
-                desc: "Grow your presence with our modern digital services, including website design, company branding, and e-Signature integration.",
-                list: [
-                  "Website design & development",
-                  "Company branding & identity",
-                  "Business email & domain setup",
-                  "e-Signature integration",
-                ],
+                desc: 'Grow your presence with our modern digital services, including website design, company branding, and e-Signature integration.',
+                list: ['Website design & development', 'Company branding & identity', 'Business email & domain setup', 'e-Signature integration'],
               },
               {
-                title: "Government Relations & PRO Services",
+                title: 'Government Relations & PRO Services',
                 icon: <Users2 className="w-6 h-6 text-green-700" />,
-                desc: "Our experienced PROs manage all interactions with government entities, including work visa processing, Qatar ID applications, and more.",
+                desc: 'Our experienced PROs manage all interactions with government entities, including work visa processing, Qatar ID applications, and more.',
                 list: [
-                  "Work visa processing & renewals",
-                  "Immigration & labor documentation",
-                  "Qatar ID & health card applications",
-                  "Ministry of Commerce processes",
+                  'Work visa processing & renewals',
+                  'Immigration & labor documentation',
+                  'Qatar ID & health card applications',
+                  'Ministry of Commerce processes',
                 ],
               },
               {
-                title: "Commercial Registration & Licensing",
+                title: 'Commercial Registration & Licensing',
                 icon: <BadgeCheck className="w-6 h-6 text-green-700" />,
-                desc: "Keep your company documents up to date with our CR and licensing support, including new CR issuance, renewals, and amendments.",
-                list: [
-                  "New CR issuance",
-                  "Trade name modification",
-                  "Activity addition/removal",
-                  "CR renewal & amendments",
-                ],
+                desc: 'Keep your company documents up to date with our CR and licensing support, including new CR issuance, renewals, and amendments.',
+                list: ['New CR issuance', 'Trade name modification', 'Activity addition/removal', 'CR renewal & amendments'],
               },
-            ].map((service, index) => {
-              const ref = useRef(null);
-              const inView = useInView(ref, { once: true });
-              const controls = useAnimation();
-
-              useEffect(() => {
-                if (inView) {
-                  controls.start("visible");
-                }
-              }, [inView]);
-
-              return (
-                <motion.div
-                  key={index}
-                  ref={ref}
-                  initial="hidden"
-                  animate={controls}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  variants={{
-                    hidden: { opacity: 0, y: 40 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
-                  className="bg-gradient-to-br from-green-50 to-white border border-green-200 rounded-2xl p-6 shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 group"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-green-100 p-2 rounded-lg">
-                      {service.icon}
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-800">{service.title}</h3>
-                  </div>
-                  <p className="text-gray-700 mb-4 leading-relaxed">{service.desc}</p>
-                  <ul className="list-disc list-inside text-gray-700 space-y-1 pl-1">
-                    {service.list.map((item, idx) => (
-                      <li key={idx}>{item}</li>
-                    ))}
-                  </ul>
-                </motion.div>
-              );
-            })}
+            ].map((service, index) => (
+              <ServiceCard key={index} service={service} index={index} />
+            ))}
           </div>
         </div>
       </section>
 
-
-      {/* Contact Us Section */}
       <section id="contact" className="py-16 px-8 bg-white">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12 text-center">Let's Build Something Great Together</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12 text-center">
+            Let us Build Something Great Together
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="relative w-full max-w-xl mx-auto p-4 sm:p-6 bg-white rounded-xl shadow-lg overflow-visible">
-              {/* Animated 1px gradient border */}
               <div
                 className="absolute inset-0 rounded-xl pointer-events-none animate-rotate-gradient"
                 style={{
                   padding: '1px',
                   background: 'linear-gradient(270deg, #34d399, #059669, #34d399)',
                   backgroundSize: '600% 600%',
-                  WebkitMask:
-                    'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
                   WebkitMaskComposite: 'destination-out',
                   maskComposite: 'exclude',
                   zIndex: 0,
                 }}
               ></div>
 
-              {/* Inner content */}
               <div className="relative z-10 bg-white rounded-xl p-4 sm:p-6 border border-transparent">
                 <p className="text-base sm:text-lg text-gray-700 mb-6 sm:mb-8 leading-relaxed">
-                  We’re here to answer your questions, offer expert advice, and help you navigate
-                  the Qatari business environment with confidence. Whether you're starting fresh
-                  or expanding your operations, our team is ready to assist.
+                  We are here to answer your questions, offer expert advice, and help you navigate the Qatari business environment with confidence. Whether you are starting fresh or expanding your operations, our team is ready to assist.
                 </p>
 
                 <div className="space-y-5 text-gray-700 text-sm sm:text-base">
                   <p className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 flex-shrink-0" />
-                    <span><strong>Office Address:</strong> Airport Street, Doha, Qatar</span>
+                    <span>
+                      <strong>Office Address:</strong> Airport Street, Doha, Qatar
+                    </span>
                   </p>
                   <p className="flex items-start gap-3">
                     <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 flex-shrink-0" />
                     <span>
                       <strong>Email:</strong>{' '}
-                      <a
-                        href="mailto:lexoraservices@gmail.com"
-                        className="hover:text-green-700 transition-colors duration-300"
-                      >
+                      <a href="mailto:lexoraservices@gmail.com" className="hover:text-green-700 transition-colors duration-300">
                         lexoraservices@gmail.com
                       </a>
                     </span>
@@ -545,10 +501,7 @@ Message: ${message}
                     <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 flex-shrink-0" />
                     <span>
                       <strong>Phone:</strong>{' '}
-                      <a
-                        href="tel:+97431107654"
-                        className="hover:text-green-700 transition-colors duration-300"
-                      >
+                      <a href="tel:+97431107654" className="hover:text-green-700 transition-colors duration-300">
                         +974 31107654
                       </a>
                     </span>
@@ -578,8 +531,8 @@ Message: ${message}
                 <button
                   className="mt-6 sm:mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg shadow-md transition duration-300"
                   onClick={() => {
-                    const text = encodeURIComponent("Hello, I would like to get in touch with Lexora Services.");
-                    window.open(`https://wa.me/97431107654?text=${text}`, "_blank");
+                    const text = encodeURIComponent('Hello, I would like to get in touch with Lexora Services.');
+                    window.open(`https://wa.me/97431107654?text=${text}`, '_blank');
                   }}
                   aria-label="Send us a message"
                 >
@@ -588,31 +541,28 @@ Message: ${message}
               </div>
             </div>
 
-
             <style jsx>{`
-        @keyframes rotate-gradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          100% {
-            background-position: 360% 50%;
-          }
-        }
+              @keyframes rotate-gradient {
+                0% {
+                  background-position: 0% 50%;
+                }
+                100% {
+                  background-position: 360% 50%;
+                }
+              }
 
-        .animate-rotate-gradient {
-          animation: rotate-gradient 8s linear infinite;
-        }
-      `}</style>
+              .animate-rotate-gradient {
+                animation: rotate-gradient 8s linear infinite;
+              }
+            `}</style>
+
             <form
               onSubmit={handleSubmit}
               className="bg-gradient-to-br animate-rotate-gradient from-white via-white to-green-100 p-6 rounded-lg shadow-md max-w-md mx-auto"
             >
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                Book a Free Consultation
-              </h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">Book a Free Consultation</h3>
               <p className="text-gray-700 mb-4">
-                Fill out the form below, and we’ll get back to you to schedule a
-                consultation at your convenience.
+                Fill out the form below, and we will get back to you to schedule a consultation at your convenience.
               </p>
               <div className="space-y-4">
                 <input
@@ -657,38 +607,36 @@ Message: ${message}
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="mt-20 bg-white border-t border-gray-200 py-8 text-gray-600">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-sm text-gray-500">© {new Date().getFullYear()} Lexora. All rights reserved.</p>
           <div className="flex space-x-6 text-sm">
-            <a href="#" className="relative group">
+            <Link href="#" className="relative group">
               <span className="transition-colors group-hover:text-green-600">Privacy Policy</span>
               <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-green-500 transition-all group-hover:w-full"></span>
-            </a>
-            <a href="#" className="relative group">
+            </Link>
+            <Link href="#" className="relative group">
               <span className="transition-colors group-hover:text-green-600">Terms</span>
               <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-green-500 transition-all group-hover:w-full"></span>
-            </a>
-            <a href="#" className="relative group">
+            </Link>
+            <Link href="#" className="relative group">
               <span className="transition-colors group-hover:text-green-600">Contact</span>
               <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-green-500 transition-all group-hover:w-full"></span>
-            </a>
+            </Link>
           </div>
         </div>
       </footer>
-
 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            "name": "Lexora Business Solutions",
-            "url": "https://www.lexoraservices.com",
-            "description": "Expert company formation, legal, PRO, and digital business services in Qatar."
-          })
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: 'Lexora Business Solutions',
+            url: 'https://www.lexoraservices.com',
+            description: 'Expert company formation, legal, PRO, and digital business services in Qatar.',
+          }),
         }}
       />
     </div>
